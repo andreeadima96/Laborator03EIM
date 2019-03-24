@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText phoneNumberEditText;
     private Button numberButton;
     final public static int PERMISSION_REQUEST_CALL_PHONE = 1;
+    final public static int CONTACTS_MANAGER_REQUEST_CODE = 2017;
 
     int[] numberButtonIds = {R.id.nr_0_button,
             R.id.nr_1_button,
@@ -105,6 +107,21 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             phoneNumberEditText.setText(phoneNumberEditText.getText().toString() + ((Button)view).getText().toString());
+        }
+    }
+
+    private ContactsImageButtonClickListener contactsImageButtonClickListener = new ContactsImageButtonClickListener();
+    private class ContactsImageButtonClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            String phoneNumber = phoneNumberEditText.getText().toString();
+            if (phoneNumber.length() > 0) {
+                Intent intent = new Intent("ro.pub.cs.systems.eim.lab04.contactsmanager.intent.action.ContactsManagerActivity");
+                intent.putExtra("ro.pub.cs.systems.eim.lab04.contactsmanager.PHONE_NUMBER_KEY", phoneNumber);
+                startActivityForResult(intent, CONTACTS_MANAGER_REQUEST_CODE);
+            } else {
+                Toast.makeText(getApplication(), getResources().getString(R.string.phone_error), Toast.LENGTH_LONG).show();
+            }
         }
     }
 }
